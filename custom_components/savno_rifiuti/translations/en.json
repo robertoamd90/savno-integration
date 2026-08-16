@@ -1,0 +1,12 @@
+{
+  "config": {
+    "step": {
+      "user": {"title": "Municipality", "description": "Select the municipality served by SAVNO.", "data": {"comune_id": "Municipality"}},
+      "address": {"title": "Address", "description": "This municipality requires an address to determine the correct collection calendar.", "data": {"indirizzo_id": "Street / address"}},
+      "house_number": {"title": "House number", "description": "Select the house number.", "data": {"civico": "House number"}},
+      "user_type": {"title": "User type", "description": "Select the user type. The configuration will be validated directly against SAVNO.", "data": {"utenza": "User type"}}
+    },
+    "error": {"cannot_connect": "Unable to retrieve or validate data from SAVNO. Please try again later."},
+    "abort": {"already_configured": "This municipality, address, house number and user type are already configured."}
+  }
+}

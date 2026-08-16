@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Comune",
+        "description": "Seleziona il comune servito da SAVNO.",
+        "data": {"comune_id": "Comune"}
+      },
+      "address": {
+        "title": "Indirizzo",
+        "description": "Questo comune richiede l'indirizzo per determinare il calendario corretto.",
+        "data": {"indirizzo_id": "Via / indirizzo"}
+      },
+      "house_number": {
+        "title": "Numero civico",
+        "description": "Seleziona il numero civico.",
+        "data": {"civico": "Numero civico"}
+      },
+      "user_type": {
+        "title": "Tipo di utenza",
+        "description": "Scegli il tipo di utenza. La configurazione verrà verificata direttamente su SAVNO.",
+        "data": {"utenza": "Utenza"}
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossibile ottenere o verificare i dati da SAVNO. Riprova più tardi."
+    },
+    "abort": {
+      "already_configured": "Questa combinazione di comune, indirizzo, civico e utenza è già configurata."
+    }
+  }
+}

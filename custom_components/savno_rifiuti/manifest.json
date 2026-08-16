@@ -1,0 +1,20 @@
+{
+  "domain": "savno_rifiuti",
+  "name": "SAVNO Raccolta Rifiuti",
+  "version": "0.5.5",
+  "codeowners": [
+    "@robertoamd90"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/robertoamd90/savno-integration",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/robertoamd90/savno-integration/issues",
+  "requirements": [
+    "beautifulsoup4==4.13.3"
+  ],
+  "dependencies": [
+    "frontend",
+    "http"
+  ]
+}
