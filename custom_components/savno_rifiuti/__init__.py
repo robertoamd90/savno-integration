@@ -7,12 +7,14 @@ from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.typing import ConfigType
 
 from .const import DOMAIN
 from .coordinator import SavnoCoordinator
 
 PLATFORMS = [Platform.CALENDAR, Platform.SENSOR]
+CONFIG_SCHEMA = cv.empty_config_schema(DOMAIN)
 _FRONTEND_URL = "/api/savno_rifiuti/frontend/savno-prossimi-ritiri-card.js?v=0.5.5"
 _FRONTEND_REGISTERED = f"{DOMAIN}_frontend_registered"
 
