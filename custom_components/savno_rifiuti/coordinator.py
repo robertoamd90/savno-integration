@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 import logging
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.event import async_track_time_change
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
 
@@ -31,9 +32,22 @@ class SavnoCoordinator(DataUpdateCoordinator[list[SavnoPickup]]):
         )
         self.entry = entry
         self.client = SavnoApiClient()
+        self._unsub_midnight = async_track_time_change(
+            hass,
+            self._handle_midnight,
+            hour=0,
+            minute=0,
+            second=0,
+        )
 
     async def async_close(self) -> None:
+        self._unsub_midnight()
         await self.client.async_close()
+
+    @callback
+    def _handle_midnight(self, _now: datetime) -> None:
+        """Refresh date-dependent entity state without calling SAVNO."""
+        self.async_update_listeners()
 
     async def _async_update_data(self) -> list[SavnoPickup]:
         try:
