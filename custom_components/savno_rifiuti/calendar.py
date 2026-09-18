@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from homeassistant.components.calendar import CalendarEntity, CalendarEvent
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
@@ -40,6 +40,12 @@ class SavnoCalendar(CoordinatorEntity[SavnoCoordinator], CalendarEntity):
             "manufacturer": "SAVNO",
             "model": "Raccolta porta a porta",
         }
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Refresh calendar state and subscribed event lists."""
+        super()._handle_coordinator_update()
+        self.async_update_event_listeners()
 
     @property
     def event(self) -> CalendarEvent | None:
