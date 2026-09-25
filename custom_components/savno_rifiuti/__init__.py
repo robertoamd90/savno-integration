@@ -15,7 +15,7 @@ from .coordinator import SavnoCoordinator
 
 PLATFORMS = [Platform.CALENDAR, Platform.SENSOR]
 CONFIG_SCHEMA = cv.empty_config_schema(DOMAIN)
-_FRONTEND_URL = "/api/savno_rifiuti/frontend/savno-prossimi-ritiri-card.js?v=0.5.5"
+_FRONTEND_URL = "/api/savno_rifiuti/frontend/savno-prossimi-ritiri-card.js?v=0.5.6"
 _FRONTEND_REGISTERED = f"{DOMAIN}_frontend_registered"
 
 
