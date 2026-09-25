@@ -2,23 +2,20 @@ name: Publish v0.5.6
 
 on:
   push:
+    branches:
+      - main
     paths:
-      - ".github/workflows/publish-v0.5.6.yml"
+      - .github/workflows/publish-v0.5.6.yml
 
 permissions:
   contents: write
 
 jobs:
   release:
-    if: github.event.head_commit.message == 'chore: publish v0.5.6 release'
     runs-on: ubuntu-latest
     steps:
-      - name: Create GitHub release
+      - name: Publish release
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create v0.5.6 \
-            --repo "$GITHUB_REPOSITORY" \
-            --target "$GITHUB_SHA" \
-            --title "v0.5.6 — Midnight refresh" \
-            --notes "Refresh automatico delle entità dipendenti dalla data a mezzanotte, senza chiamate SAVNO aggiuntive. Il polling remoto resta invariato ogni tre ore. Aggiornata inoltre la versione dell'integrazione e il cache-busting frontend a 0.5.6."
+          gh release create v0.5.6 --repo "${GITHUB_REPOSITORY}" --target "${GITHUB_SHA}" --title "v0.5.6 - Midnight refresh" --notes "Refresh delle entita dipendenti dalla data a mezzanotte senza richieste SAVNO aggiuntive. Polling invariato ogni tre ore. Versione e cache frontend aggiornate a 0.5.6."
