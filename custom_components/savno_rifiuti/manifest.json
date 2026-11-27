@@ -13,8 +13,6 @@
   "integration_type": "service",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/robertoamd90/savno-integration/issues",
-  "requirements": [
-    "beautifulsoup4>=4.13.3"
-  ],
-  "version": "0.5.6"
+  "requirements": [],
+  "version": "0.5.7"
 }

@@ -6,9 +6,9 @@ from typing import Any
 import logging
 
 import aiohttp
-from bs4 import BeautifulSoup
 
 from .const import ADDRESSES_URL, CALENDAR_URL, COMMUNITIES_URL, FORM_URL
+from .html_parser import CalendarHTMLParser
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -121,8 +121,10 @@ class SavnoApiClient:
 
 def parse_pickups(html: str, today: date) -> list[SavnoPickup]:
     """Parse the server-rendered 'prossimi 7 giorni' calendar."""
-    soup = BeautifulSoup(html, "html.parser")
-    rows = soup.select("div.row_box_calendario")
+    parser = CalendarHTMLParser()
+    parser.feed(html)
+    parser.close()
+    rows = list(parser.root.select("row_box_calendario", "div"))
     if not rows:
         raise SavnoApiError(
             "Calendario SAVNO non trovato nella pagina; sessione non valida o struttura del sito modificata"
@@ -130,27 +132,26 @@ def parse_pickups(html: str, today: date) -> list[SavnoPickup]:
 
     pickups: list[SavnoPickup] = []
     for row in rows:
-        day_el = row.select_one(".calendario_numero")
-        month_el = row.select_one(".calendario_mese")
+        day_el = next(row.select("calendario_numero"), None)
+        month_el = next(row.select("calendario_mese"), None)
         if day_el is None or month_el is None:
             continue
 
         try:
-            day_num = int(day_el.get_text(strip=True))
-            month_num = MONTHS_IT[month_el.get_text(strip=True).lower()]
+            day_num = int("".join(day_el.strings()))
+            month_num = MONTHS_IT["".join(month_el.strings()).lower()]
+            event_day = date(today.year, month_num, day_num)
+            if event_day < today - timedelta(days=7):
+                event_day = date(today.year + 1, month_num, day_num)
         except (ValueError, KeyError):
             continue
 
-        event_day = date(today.year, month_num, day_num)
-        if event_day < today - timedelta(days=7):
-            event_day = date(today.year + 1, month_num, day_num)
-
         waste_types: list[str] = []
-        for image in row.select("img.icona_bidone"):
-            parent = image.find_parent("p")
+        for image in row.select("icona_bidone", "img"):
+            parent = image.ancestor("p")
             if parent is None:
                 continue
-            text = " ".join(parent.stripped_strings)
+            text = " ".join(parent.strings())
             if text and text not in waste_types:
                 waste_types.append(text)
 
