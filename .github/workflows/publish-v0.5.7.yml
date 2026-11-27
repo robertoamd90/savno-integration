@@ -1,0 +1,38 @@
+name: Publish SAVNO v0.5.7
+on:
+  push:
+    branches:
+      - release/v0.5.7
+    paths:
+      - .github/workflows/publish-v0.5.7.yml
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TARGET_SHA: 365da2fe3cff4454f6b37734e3e592717ed08c2c
+    steps:
+      - name: Confirm production validation
+        run: |
+          set -euo pipefail
+          gh run watch 46076532112 --exit-status --interval 5
+          test "$(gh api "repos/$GH_REPO/git/ref/heads/main" --jq .object.sha)" = "$TARGET_SHA"
+          test "$(gh api "repos/$GH_REPO/contents/custom_components/savno_rifiuti/manifest.json?ref=$TARGET_SHA" --jq .content | base64 -d | jq -r .version)" = "0.5.7"
+      - name: Publish stable release
+        run: |
+          set -euo pipefail
+          gh release create v0.5.7 --target "$TARGET_SHA" --title "v0.5.7 - Config flow fix" --latest --notes '## Correzioni
+          - Risolto l’errore di caricamento del config flow causato dal conflitto BeautifulSoup4.
+          - Eliminata la dipendenza BeautifulSoup4; parsing HTML con la libreria standard Python.
+          - Aggiunti test di regressione del calendario.
+          - Endpoint, entità, dashboard e configurazioni esistenti invariati.
+
+          Verificato su Home Assistant dal maintainer; validazioni HACS e Hassfest superate.'
+          gh release view v0.5.7 --json tagName,url,isDraft,isPrerelease,targetCommitish
